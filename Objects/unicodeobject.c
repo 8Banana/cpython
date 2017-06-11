@@ -11288,8 +11288,7 @@ PyUnicode_Concat(PyObject *left, PyObject *right)
         return NULL;
 
     if (!PyUnicode_Check(right)) {
-        PyErr_Format(PyExc_TypeError,
-                     "can only concatenate str (not \"%.200s\") to str",
+        PyErr_Format(PyExc_TypeError, "str + %.200s",
                      right->ob_type->tp_name);
         return NULL;
     }

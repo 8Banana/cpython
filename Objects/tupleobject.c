@@ -458,9 +458,8 @@ tupleconcat(PyTupleObject *a, PyObject *bb)
         return bb;
     }
     if (!PyTuple_Check(bb)) {
-        PyErr_Format(PyExc_TypeError,
-             "can only concatenate tuple (not \"%.200s\") to tuple",
-                 Py_TYPE(bb)->tp_name);
+        PyErr_Format(PyExc_TypeError, "tuple + %.200s",
+                     Py_TYPE(bb)->tp_name);
         return NULL;
     }
 #define b ((PyTupleObject *)bb)
