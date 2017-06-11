@@ -940,8 +940,7 @@ sequence_repeat(ssizeargfunc repeatfunc, PyObject *seq, PyObject *n)
             return NULL;
     }
     else {
-        return type_error("can't multiply sequence by "
-                          "non-int of type '%.200s'", n);
+        return binop_type_error(seq, n, "*");
     }
     return (*repeatfunc)(seq, count);
 }
