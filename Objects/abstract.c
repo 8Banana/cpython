@@ -804,12 +804,13 @@ binary_op1(PyObject *v, PyObject *w, const int op_slot)
 static PyObject *
 binop_type_error(PyObject *v, PyObject *w, const char *op_name)
 {
-    PyErr_Format(PyExc_TypeError,
-                 "unsupported operand type(s) for %.100s: "
-                 "'%.100s' and '%.100s'",
-                 op_name,
-                 v->ob_type->tp_name,
-                 w->ob_type->tp_name);
+    if (strcmp(op_name, "divmod()") == 0) {
+        PyErr_Format(PyExc_TypeError, "divmod(%.100s, %.100s)",
+                     v->ob_type->tp_name, w->ob_type->tp_name);
+    } else {
+        PyErr_Format(PyExc_TypeError, "%.100s %.100s %.100s",
+                     v->ob_type->tp_name, op_name, w->ob_type->tp_name);
+    }
     return NULL;
 }
 
@@ -889,16 +890,11 @@ ternary_op(PyObject *v,
 
     if (z == Py_None)
         PyErr_Format(
-            PyExc_TypeError,
-            "unsupported operand type(s) for ** or pow(): "
-            "'%.100s' and '%.100s'",
-            v->ob_type->tp_name,
-            w->ob_type->tp_name);
+            PyExc_TypeError, "%.100s ** %.100s",
+            v->ob_type->tp_name, w->ob_type->tp_name);
     else
         PyErr_Format(
-            PyExc_TypeError,
-            "unsupported operand type(s) for pow(): "
-            "'%.100s', '%.100s', '%.100s'",
+            PyExc_TypeError, "pow(%.100s, %.100s, %.100s)",
             v->ob_type->tp_name,
             w->ob_type->tp_name,
             z->ob_type->tp_name);
@@ -1164,7 +1160,7 @@ PyNumber_Negative(PyObject *o)
     if (m && m->nb_negative)
         return (*m->nb_negative)(o);
 
-    return type_error("bad operand type for unary -: '%.200s'", o);
+    return type_error("-%.200s", o);
 }
 
 PyObject *
@@ -1180,7 +1176,7 @@ PyNumber_Positive(PyObject *o)
     if (m && m->nb_positive)
         return (*m->nb_positive)(o);
 
-    return type_error("bad operand type for unary +: '%.200s'", o);
+    return type_error("+%.200s", o);
 }
 
 PyObject *
@@ -1196,7 +1192,7 @@ PyNumber_Invert(PyObject *o)
     if (m && m->nb_invert)
         return (*m->nb_invert)(o);
 
-    return type_error("bad operand type for unary ~: '%.200s'", o);
+    return type_error("~%.200s", o);
 }
 
 PyObject *
@@ -1212,7 +1208,7 @@ PyNumber_Absolute(PyObject *o)
     if (m && m->nb_absolute)
         return m->nb_absolute(o);
 
-    return type_error("bad operand type for abs(): '%.200s'", o);
+    return type_error("abs(%.200s)", o);
 }
 
 /* Return a Python int from the object item.

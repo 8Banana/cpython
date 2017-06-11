@@ -372,7 +372,7 @@ complicated example::
    Traceback (most recent call last):
      File "<stdin>", line 1, in <module>
      File "<stdin>", line 3, in divide
-   TypeError: unsupported operand type(s) for /: 'str' and 'str'
+   TypeError: str / str
 
 As you can see, the :keyword:`finally` clause is executed in any event.  The
 :exc:`TypeError` raised by dividing two strings is not handled by the
