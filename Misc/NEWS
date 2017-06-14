@@ -142,6 +142,9 @@ Core and Builtins
 
 - bpo-29546: Improve from-import error message with location
 
+- bpo-29478: If max_line_length=None is specified while using the Compat32 policy,
+  it is no longer ignored.  Patch by Mircea Cosbuc.
+
 - Issue #29319: Prevent RunMainFromImporter overwriting sys.path[0].
 
 - Issue #29337: Fixed possible BytesWarning when compare the code objects.
@@ -358,6 +361,18 @@ Extension Modules
 
 Library
 -------
+
+- bpo-24744: pkgutil.walk_packages function now raises ValueError if *path*
+  is a string. Patch by Sanyam Khurana.
+
+- bpo-24484: Avoid race condition in multiprocessing cleanup.
+
+- bpo-30589: Fix multiprocessing.Process.exitcode to return the opposite
+  of the signal number when the process is killed by a signal (instead
+  of 255) when using the "forkserver" method.
+
+- bpo-28994: The traceback no longer displayed for SystemExit raised in
+  a callback registered by atexit.
 
 - bpo-30508: Don't log exceptions if Task/Future "cancel()" method was
   called.
@@ -1088,6 +1103,9 @@ Library
 - Issue #25532: inspect.unwrap() will now only try to unwrap an object
   sys.getrecursionlimit() times, to protect against objects which create a new
   object on every attribute access.
+
+- bpo-30177: path.resolve(strict=False) no longer cuts the path after the first
+  element not present in the filesystem.  Patch by Antoine Pietri.
 
 IDLE
 ----
