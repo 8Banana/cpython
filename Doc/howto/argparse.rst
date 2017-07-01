@@ -547,7 +547,7 @@ And this is what it gives:
    Traceback (most recent call last):
      File "prog.py", line 11, in <module>
        if args.verbosity >= 2:
-   TypeError: '>=' not supported between instances of 'NoneType' and 'int'
+   TypeError: NoneType >= int
 
 
 * First output went well, and fixes the bug we had before.

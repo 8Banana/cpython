@@ -689,11 +689,8 @@ do_richcompare(PyObject *v, PyObject *w, int op)
         res = (v != w) ? Py_True : Py_False;
         break;
     default:
-        PyErr_Format(PyExc_TypeError,
-                     "'%s' not supported between instances of '%.100s' and '%.100s'",
-                     opstrings[op],
-                     v->ob_type->tp_name,
-                     w->ob_type->tp_name);
+        PyErr_Format(PyExc_TypeError, "%.100s %s %.100s",
+                     v->ob_type->tp_name, opstrings[op], w->ob_type->tp_name);
         return NULL;
     }
     Py_INCREF(res);
