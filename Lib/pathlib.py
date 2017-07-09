@@ -6,7 +6,7 @@ import os
 import posixpath
 import re
 import sys
-from collections.abc import Sequence
+from collections.abc import Sequence, Set, MutableSet
 from errno import EINVAL, ENOENT, ENOTDIR
 from operator import attrgetter
 from stat import S_ISDIR, S_ISLNK, S_ISREG, S_ISSOCK, S_ISBLK, S_ISCHR, S_ISFIFO
@@ -583,7 +583,7 @@ class _PathParents(Sequence):
         return "<{}.parents>".format(self._pathcls.__name__)
 
 
-class PurePath(object):
+class PurePath(Set):
     """PurePath represents a filesystem path and offers operations which
     don't imply any actual filesystem I/O.  Depending on your system,
     instantiating a PurePath will return either a PurePosixPath or a
@@ -933,6 +933,20 @@ class PurePath(object):
                 return False
         return True
 
+    # set interface
+    def __contains__(self, other):
+        return (self / other) in self.iterdir()
+
+    def __iter__(self):
+        yield from self.iterdir()
+
+    def __len__(self):
+        # this sucks
+        result = 0
+        for sub in self:
+            result += 1
+        return result
+
 # Can't subclass os.PathLike from PurePath and keep the constructor
 # optimizations in PurePath._parse_args().
 os.PathLike.register(PurePath)
@@ -951,7 +965,7 @@ class PureWindowsPath(PurePath):
 # Filesystem-accessing classes
 
 
-class Path(PurePath):
+class Path(PurePath, MutableSet):
     __slots__ = (
         '_accessor',
         '_closed',
@@ -1403,6 +1417,22 @@ class Path(PurePath):
             return self._from_parts([homedir] + self._parts[1:])
 
         return self
+
+    # mutable set interface
+    def add(self, name):
+        (self / name).touch()
+
+    def remove(self, name):
+        try:
+            (self / name).unlink()
+        except FileNotFoundError as e:
+            raise KeyError from e
+
+    def discard(self, name):
+        try:
+            self.remove(name)
+        except KeyError:
+            pass
 
 
 class PosixPath(Path, PurePosixPath):
