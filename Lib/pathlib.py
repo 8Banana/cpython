@@ -935,10 +935,10 @@ class PurePath(Set):
 
     # set interface
     def __contains__(self, other):
-        return (self / other) in self.iterdir()
+        return other in self.__iter__()
 
     def __iter__(self):
-        yield from self.iterdir()
+        return (path.name for path in self.iterdir())
 
     def __len__(self):
         # this sucks
