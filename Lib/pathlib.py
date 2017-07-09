@@ -947,6 +947,11 @@ class PurePath(Set):
             result += 1
         return result
 
+    # see help('collections.abc.Set._from_iterable')
+    @classmethod
+    def _from_iterable(cls, iterable):
+        return set(iterable)
+
 # Can't subclass os.PathLike from PurePath and keep the constructor
 # optimizations in PurePath._parse_args().
 os.PathLike.register(PurePath)
