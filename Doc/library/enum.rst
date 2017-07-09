@@ -318,7 +318,7 @@ members are not integers (but see `IntEnum`_ below)::
     >>> Color.RED < Color.BLUE
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-    TypeError: '<' not supported between instances of 'Color' and 'Color'
+    TypeError: Color < Color
 
 Equality comparisons are defined though::
 

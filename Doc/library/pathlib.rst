@@ -200,7 +200,7 @@ Paths of a different flavour compare unequal and cannot be ordered::
    >>> PureWindowsPath('foo') < PurePosixPath('foo')
    Traceback (most recent call last):
      File "<stdin>", line 1, in <module>
-   TypeError: '<' not supported between instances of 'PureWindowsPath' and 'PurePosixPath'
+   TypeError: PureWindowsPath < PurePosixPath
 
 
 Operators
