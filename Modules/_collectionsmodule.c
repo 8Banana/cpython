@@ -911,14 +911,10 @@ done:
 }
 
 static PyObject *
-deque_rotate(dequeobject *deque, PyObject **args, Py_ssize_t nargs,
-             PyObject *kwnames)
+deque_rotate(dequeobject *deque, PyObject **args, Py_ssize_t nargs)
 {
     Py_ssize_t n=1;
 
-    if (!_PyArg_NoStackKeywords("rotate", kwnames)) {
-        return NULL;
-    }
     if (!_PyArg_ParseStack(args, nargs, "|n:rotate", &n)) {
         return NULL;
     }
@@ -1051,8 +1047,7 @@ deque_len(dequeobject *deque)
 }
 
 static PyObject *
-deque_index(dequeobject *deque, PyObject **args, Py_ssize_t nargs,
-            PyObject *kwnames)
+deque_index(dequeobject *deque, PyObject **args, Py_ssize_t nargs)
 {
     Py_ssize_t i, n, start=0, stop=Py_SIZE(deque);
     PyObject *v, *item;
@@ -1061,9 +1056,6 @@ deque_index(dequeobject *deque, PyObject **args, Py_ssize_t nargs,
     size_t start_state = deque->state;
     int cmp;
 
-    if (!_PyArg_NoStackKeywords("index", kwnames)) {
-        return NULL;
-    }
     if (!_PyArg_ParseStack(args, nargs, "O|O&O&:index", &v,
                            _PyEval_SliceIndexNotNone, &start,
                            _PyEval_SliceIndexNotNone, &stop)) {
@@ -1132,17 +1124,13 @@ PyDoc_STRVAR(index_doc,
 */
 
 static PyObject *
-deque_insert(dequeobject *deque, PyObject **args, Py_ssize_t nargs,
-             PyObject *kwnames)
+deque_insert(dequeobject *deque, PyObject **args, Py_ssize_t nargs)
 {
     Py_ssize_t index;
     Py_ssize_t n = Py_SIZE(deque);
     PyObject *value;
     PyObject *rv;
 
-    if (!_PyArg_NoStackKeywords("insert", kwnames)) {
-        return NULL;
-    }
     if (!_PyArg_ParseStack(args, nargs, "nO:insert", &index, &value)) {
         return NULL;
     }
@@ -1728,6 +1716,8 @@ dequeiter_traverse(dequeiterobject *dio, visitproc visit, void *arg)
 static void
 dequeiter_dealloc(dequeiterobject *dio)
 {
+    /* bpo-31095: UnTrack is needed before calling any callbacks */
+    PyObject_GC_UnTrack(dio);
     Py_XDECREF(dio->deque);
     PyObject_GC_Del(dio);
 }
@@ -2108,6 +2098,8 @@ static PyMemberDef defdict_members[] = {
 static void
 defdict_dealloc(defdictobject *dd)
 {
+    /* bpo-31095: UnTrack is needed before calling any callbacks */
+    PyObject_GC_UnTrack(dd);
     Py_CLEAR(dd->default_factory);
     PyDict_Type.tp_dealloc((PyObject *)dd);
 }
